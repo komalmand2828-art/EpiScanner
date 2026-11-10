@@ -6,7 +6,14 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.ai_service import analyse_image
-from app.database import save_scan_report, create_profile, list_profiles, find_profile
+from app.database import (
+    save_scan_report,
+    create_profile,
+    list_profiles,
+    find_profile,
+    find_profile_by_card_uid,
+    get_scan_history,
+)    
 from pydantic import BaseModel, Field
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -233,7 +240,7 @@ async def analyse(
         # Save report for registered RFID user
         if card_uid and card_uid.strip():
             try:
-                save_result = save_scan_report(
+                storage_result = save_scan_report(
                     report,
                     card_uid=card_uid.strip(),
                 )
@@ -278,3 +285,47 @@ async def analyse(
 
     finally:
         await file.close()
+
+@app.get("/api/history/{card_uid}")
+async def get_patient_history(card_uid: str):
+    try:
+        profile = find_profile(
+            card_uid=card_uid,
+            display_name=""
+        )
+
+        if not profile:
+            raise HTTPException(status_code=404, detail="Patient not found")
+
+        history = get_scan_history(card_uid)
+
+        return {
+            "success": True,
+            "history": history
+        }
+
+    except HTTPException:
+        raise
+    except Exception as exc:
+        print("History error:", str(exc))
+        raise HTTPException(status_code=500, detail="History unavailable")
+
+@app.get("/api/history/{card_uid}")
+async def patient_history(card_uid: str):
+    try:
+        result = get_scan_history(card_uid)
+
+        return {
+            "success": True,
+            "history": result
+        }
+
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+
+    except Exception as exc:
+        print("History error:", str(exc))
+        raise HTTPException(
+            status_code=500,
+            detail="Could not retrieve patient history."
+        )

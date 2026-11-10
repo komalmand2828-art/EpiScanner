@@ -9,20 +9,17 @@ load_dotenv(BASE_DIR / ".env")
 
 
 def get_supabase_client():
-    """Create a client for the EpiScanner cloud database."""
+    """Connect to Supabase."""
     url = os.getenv("SUPABASE_URL")
     key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 
     if not url or not key:
-        raise RuntimeError(
-            "Supabase configuration is missing. Check the root .env file."
-        )
+        raise RuntimeError("Check SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.")
 
     return create_client(url, key)
 
 
 def test_database_connection():
-    """Check whether the backend can query the cloud database."""
     client = get_supabase_client()
 
     result = (
@@ -34,35 +31,31 @@ def test_database_connection():
 
     return {
         "connected": True,
-        "message": "Supabase database connection successful.",
-        "rows_checked": len(result.data),
+        "message": "Supabase connection successful.",
+        "rows_checked": len(result.data or []),
     }
 
+
 def save_scan_report(report, card_uid="DEMO-USER"):
-    """Save an AI report under a profile in Supabase."""
+    """Save an AI report against an RFID profile."""
     client = get_supabase_client()
 
-    # Find the profile or create it if it does not exist.
     profile_result = (
         client.table("profiles")
         .upsert(
-            {"card_uid": card_uid},
+            {"card_uid": card_uid.strip()},
             on_conflict="card_uid",
         )
         .execute()
     )
 
     if not profile_result.data:
-        raise RuntimeError("Could not create or find the scan profile.")
+        raise RuntimeError("Could not find or create profile.")
 
     profile_id = profile_result.data[0]["id"]
 
-    # Extract the scan area when the AI report provides one.
-    scan_area = None
-    if isinstance(report, dict):
-        scan_area = report.get("scan_area")
+    scan_area = report.get("scan_area") if isinstance(report, dict) else None
 
-    # Save the report as JSON in the cloud database.
     scan_result = (
         client.table("scans")
         .insert({
@@ -74,7 +67,7 @@ def save_scan_report(report, card_uid="DEMO-USER"):
     )
 
     if not scan_result.data:
-        raise RuntimeError("The scan report was not saved.")
+        raise RuntimeError("Scan report was not saved.")
 
     return {
         "saved": True,
@@ -82,13 +75,14 @@ def save_scan_report(report, card_uid="DEMO-USER"):
         "profile_id": profile_id,
     }
 
+
 def register_profile(card_uid, display_name):
-    """Create or update a profile associated with an RFID card."""
+    """Create or update an RFID profile."""
     card_uid = card_uid.strip()
     display_name = display_name.strip()
 
     if not card_uid or not display_name:
-        raise ValueError("Both card UID and display name are required.")
+        raise ValueError("Card UID and name are required.")
 
     client = get_supabase_client()
 
@@ -105,7 +99,7 @@ def register_profile(card_uid, display_name):
     )
 
     if not result.data:
-        raise RuntimeError("Could not save the profile.")
+        raise RuntimeError("Could not save profile.")
 
     profile = result.data[0]
 
@@ -115,13 +109,14 @@ def register_profile(card_uid, display_name):
         "card_uid": profile["card_uid"],
     }
 
+
 def create_profile(card_uid, display_name):
-    """Register a new person with a unique RFID card."""
+    """Register a new patient."""
     card_uid = card_uid.strip()
     display_name = display_name.strip()
 
     if not card_uid or not display_name:
-        raise ValueError("Card UID and person's name are required.")
+        raise ValueError("Card UID and name are required.")
 
     client = get_supabase_client()
 
@@ -156,8 +151,9 @@ def create_profile(card_uid, display_name):
         "card_uid": profile["card_uid"],
     }
 
+
 def list_profiles():
-    """Retrieve registered profiles from Supabase."""
+    """Get all registered patients."""
     client = get_supabase_client()
 
     result = (
@@ -169,13 +165,14 @@ def list_profiles():
 
     return result.data or []
 
+
 def find_profile(card_uid, display_name):
-    """Find an existing profile using its RFID UID and registered name."""
+    """Find a profile using RFID UID and name."""
     card_uid = card_uid.strip()
     display_name = display_name.strip()
 
     if not card_uid or not display_name:
-        raise ValueError("Name and RFID card UID are required.")
+        raise ValueError("Name and RFID UID are required.")
 
     client = get_supabase_client()
 
@@ -188,15 +185,69 @@ def find_profile(card_uid, display_name):
     )
 
     if not result.data:
-        raise ValueError("No profile found. Check your name and RFID card UID.")
+        raise ValueError("No profile found.")
 
     profile = result.data[0]
 
     if (profile.get("display_name") or "").strip().casefold() != display_name.casefold():
-        raise ValueError("The name does not match this RFID card.")
+        raise ValueError("Name does not match this RFID card.")
 
     return {
         "profile_id": profile["id"],
         "display_name": profile["display_name"],
         "card_uid": profile["card_uid"],
+    }
+
+
+def find_profile_by_card_uid(card_uid):
+    """Find a patient using RFID UID only."""
+    card_uid = card_uid.strip()
+
+    if not card_uid:
+        raise ValueError("RFID card UID is required.")
+
+    client = get_supabase_client()
+
+    result = (
+        client.table("profiles")
+        .select("id, card_uid, display_name")
+        .eq("card_uid", card_uid)
+        .limit(1)
+        .execute()
+    )
+
+    if not result.data:
+        return None
+
+    profile = result.data[0]
+
+    return {
+        "profile_id": profile["id"],
+        "display_name": profile["display_name"],
+        "card_uid": profile["card_uid"],
+    }
+
+
+def get_scan_history(card_uid):
+    """Get all previous scans for one RFID patient."""
+    profile = find_profile_by_card_uid(card_uid)
+
+    if not profile:
+        raise ValueError("Patient not found. Register the RFID card first.")
+
+    client = get_supabase_client()
+
+    result = (
+        client.table("scans")
+        .select("id, profile_id, scanned_at, scan_area, report")
+        .eq("profile_id", profile["profile_id"])
+        .order("scanned_at", desc=True)
+        .limit(100)
+        .execute()
+    )
+
+    return {
+        "patient": profile,
+        "total_scans": len(result.data or []),
+        "scans": result.data or [],
     }
