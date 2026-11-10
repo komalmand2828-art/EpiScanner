@@ -251,3 +251,42 @@ def get_scan_history(card_uid):
         "total_scans": len(result.data or []),
         "scans": result.data or [],
     }
+
+def get_profile_history(card_uid):
+    """Get all previous scans for one registered RFID user."""
+
+    card_uid = card_uid.strip()
+
+    if not card_uid:
+        raise ValueError("RFID card UID is required.")
+
+    client = get_supabase_client()
+
+    # Find the registered profile
+    profile_result = (
+        client.table("profiles")
+        .select("id, display_name")
+        .eq("card_uid", card_uid)
+        .limit(1)
+        .execute()
+    )
+
+    if not profile_result.data:
+        raise ValueError("Profile not found.")
+
+    profile = profile_result.data[0]
+
+    # Fetch all scans belonging to this profile
+    scans_result = (
+        client.table("scans")
+        .select("id, scanned_at, scan_area, report")
+        .eq("profile_id", profile["id"])
+        .order("scanned_at", desc=True)
+        .execute()
+    )
+
+    return {
+        "profile_id": profile["id"],
+        "display_name": profile["display_name"],
+        "history": scans_result.data or []
+    }

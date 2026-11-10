@@ -13,6 +13,7 @@ from app.database import (
     find_profile,
     find_profile_by_card_uid,
     get_scan_history,
+    get_profile_history
 )    
 from pydantic import BaseModel, Field
 
@@ -205,6 +206,33 @@ async def lookup_person(profile: ProfileLookup):
             status_code=500,
             detail="Could not look up the profile. Check the server terminal.",
         ) from exc
+
+@app.get("/api/profiles/{card_uid}/history")
+async def profile_history(card_uid: str):
+    try:
+        result = get_profile_history(card_uid)
+
+        return {
+            "success": True,
+            "profile": {
+                "id": result["profile_id"],
+                "display_name": result["display_name"]
+            },
+            "history": result["history"]
+        }
+
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=str(exc)
+        )
+
+    except Exception as exc:
+        print("History retrieval failed:", str(exc))
+        raise HTTPException(
+            status_code=500,
+            detail="Could not retrieve scan history."
+        )
 
 
 @app.post("/api/analyse")

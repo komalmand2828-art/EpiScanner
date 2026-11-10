@@ -344,6 +344,35 @@ footer{
     grid-template-columns: 1fr !important;
   }
 }
+.history-item {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+  margin: 12px 0;
+  background: #fbfdfb;
+}
+
+.history-item h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.history-item p {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.history-item .btn {
+  margin-top: 8px;
+}
+
+.history-empty {
+  text-align: center;
+  padding: 30px 12px;
+  color: var(--muted);
+  font-size: 13px;
+}
 </style>
 </head>
 
@@ -584,6 +613,13 @@ footer{
       <div class="kicker" data-i18n="reportKicker">02 / AI REVIEW</div>
       <div class="report-header">
         <h2 data-i18n="reportTitle">Your assessment</h2>
+
+        <button class="btn secondary"
+                id="historyButton"
+                type="button"
+                hidden>
+          🕑 Scan History  
+        </button>
       </div>
       <p class="sub" data-i18n="reportDesc">Clear, point-by-point observations and simple guidance.</p>
 
@@ -597,6 +633,29 @@ footer{
       <div id="report"></div>
     </section>
   </div>
+
+  <section class="card" id="historyCard"
+         style="display:none;margin-top:22px">
+
+  <div class="kicker">03 / PATIENT HISTORY</div>
+
+  <h2>Previous scan reports</h2>
+
+  <p class="sub" id="historyUser">
+    Your previous scan records.
+  </p>
+
+  <button class="btn outline" id="refreshHistory"
+          type="button">
+    ↻ Refresh History
+  </button>
+
+  <div id="historyList" style="margin-top:20px">
+  </div>
+
+  <div class="error" id="historyError"></div>
+
+</section>
 </main>
 
 <footer>
@@ -1356,6 +1415,8 @@ window.addEventListener("beforeunload", () => {
  $("guestModeButton").addEventListener("click", () => {
    isGuestMode = true;
    activeProfile = null;
+   $("historyButton").hidden = true;
+   $("historyCard").style.display = "none";
    showOnlyAccessPanel("guestPanel");
  });
 
@@ -1372,6 +1433,8 @@ window.addEventListener("beforeunload", () => {
  $("registeredModeButton").addEventListener("click", () => {
    isGuestMode = false;
    activeProfile = null;
+   $("historyButton").hidden = true;
+   $("historyCard").style.display = "none";
    $("existingName").value = "";
    $("existingCardUid").value = "";
    $("continueRegisteredScan").disabled = true;
@@ -1420,6 +1483,14 @@ window.addEventListener("beforeunload", () => {
 
      activeProfile = result.profile;
 
+     // Show Scan History button after successful login
+
+     $("historyButton").hidden = false;
+
+     // Hide old history until requested
+
+     $("historyCard").style.display = "none";
+
      successBox.textContent =
        "Welcome, " + activeProfile.display_name +
        "! Your profile has been found.";
@@ -1451,6 +1522,124 @@ window.addEventListener("beforeunload", () => {
  $("backToWelcome").addEventListener("click", () => {
    showOnlyAccessPanel("userEntryCard");
  });
+
+ // =====================================
+// EPISCANNER SCAN HISTORY
+// =====================================
+
+async function loadHistory() {
+  if (!activeProfile || !activeProfile.card_uid) {
+    return;
+  }
+
+  const cardUid = activeProfile.card_uid;
+  const list = $("historyList");
+  const errorBox = $("historyError");
+
+  errorBox.style.display = "none";
+  list.replaceChildren();
+
+  addText(list, "p", "Loading previous scans...");
+
+  try {
+    const response = await fetch(
+      `/api/profiles/${encodeURIComponent(cardUid)}/history`
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.detail || "History could not load.");
+    }
+
+    list.replaceChildren();
+
+    $("historyUser").textContent =
+      "Scan records for " + activeProfile.display_name;
+
+    if (!result.history || result.history.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "history-empty";
+      empty.textContent = "No previous scans found.";
+      list.appendChild(empty);
+      return;
+    }
+
+    result.history.forEach((scan, index) => {
+      const item = document.createElement("div");
+      item.className = "history-item";
+
+      addText(item, "h3", `Scan ${index + 1}`);
+
+      const date = scan.scanned_at
+        ? new Date(scan.scanned_at).toLocaleString()
+        : "Date unavailable";
+
+      addText(item, "p", "Date: " + date);
+      addText(item, "p", "Area: " + (scan.scan_area || "Not specified"));
+
+      const viewButton = document.createElement("button");
+      viewButton.className = "btn secondary";
+      viewButton.type = "button";
+      viewButton.textContent = "View full report";
+
+      viewButton.addEventListener("click", () => {
+        let report = scan.report;
+
+        if (typeof report === "string") {
+          try {
+            report = JSON.parse(report);
+          } catch {
+            errorBox.textContent = "Saved report format is invalid.";
+            errorBox.style.display = "block";
+            return;
+          }
+        }
+
+        if (!report || typeof report !== "object") {
+          errorBox.textContent = "Report is unavailable.";
+          errorBox.style.display = "block";
+          return;
+        }
+
+        renderReport(report);
+
+        document.querySelector(".layout").scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      });
+
+      item.appendChild(viewButton);
+      list.appendChild(item);
+    });
+
+  } catch (err) {
+    list.replaceChildren();
+    errorBox.textContent = err.message || "Could not load history.";
+    errorBox.style.display = "block";
+  }
+}
+
+// Open and close history
+$("historyButton").addEventListener("click", async () => {
+  const card = $("historyCard");
+
+  if (card.style.display === "none") {
+    card.style.display = "block";
+    await loadHistory();
+
+    card.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  } else {
+    card.style.display = "none";
+  }
+});
+
+// Refresh history
+$("refreshHistory").addEventListener("click", loadHistory);
 
  // Start with welcome screen visible
  
