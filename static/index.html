@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#103e37">
+<title>EpiScanner | Skin & Scalp Intelligence</title>
+
+<style>
+:root {
+  --green:#176b5b;
+  --deep:#103e37;
+  --mint:#e7f3ec;
+  --bg:#f5f7f3;
+  --white:#fff;
+  --ink:#203a35;
+  --muted:#788780;
+  --line:#e4ebe5;
+  --gold:#c6a66b;
+  --shadow:0 16px 45px rgba(24,59,45,.07);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:Inter,"Segoe UI",Arial,sans-serif;
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.45;cursor:not-allowed}
+header{
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:18px;padding:18px 5%;
+  background:#ffffffed;border-bottom:1px solid var(--line);
+}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{
+  width:46px;height:46px;border-radius:16px;
+  background:var(--deep);color:#fff;display:grid;place-items:center;
+  font-size:26px;
+}
+.brand h2{margin:0;font-size:21px;letter-spacing:-.7px}
+.brand p{margin:4px 0 0;font-size:11px;color:var(--muted)}
+.header-right{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.language{
+  padding:10px 13px;border:1px solid var(--line);
+  border-radius:12px;background:white;color:var(--ink);
+}
+.pill{
+  padding:9px 12px;border-radius:30px;background:var(--mint);
+  color:var(--green);font-size:11px;font-weight:800;
+}
+main{max-width:1280px;margin:auto;padding:35px 22px 60px}
+.hero{
+  position:relative;overflow:hidden;border-radius:26px;
+  background:linear-gradient(120deg,#103e37,#1b7563);
+  padding:38px;color:white;margin-bottom:24px;
+}
+.hero:after{
+  content:"✳";position:absolute;right:6%;top:-55px;
+  font-size:240px;color:#ffffff0b;pointer-events:none;
+}
+.eyebrow{
+  text-transform:uppercase;letter-spacing:2px;
+  font-size:10px;font-weight:800;color:#bde1ce;
+}
+.hero h1{
+  max-width:650px;font-size:clamp(32px,4vw,49px);
+  letter-spacing:-1.6px;line-height:1.1;margin:15px 0 12px;
+}
+.hero p{max-width:650px;color:#e0eee8;font-size:14px;line-height:1.8;margin:0}
+.hero-bottom{display:flex;gap:9px;flex-wrap:wrap;margin-top:24px}
+.hero-tag{
+  border:1px solid #ffffff35;border-radius:30px;padding:9px 12px;
+  color:#e5f3eb;font-size:11px;
+}
+.notice{
+  display:flex;gap:12px;padding:15px 18px;
+  background:#fff9ec;border:1px solid #eee0bd;
+  border-radius:15px;color:#79653c;font-size:12px;line-height:1.7;
+  margin-bottom:24px;
+}
+.notice strong{color:#69552d}
+.layout{
+  display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);
+  gap:22px;align-items:start;
+}
+.card{
+  min-width:0;background:white;border:1px solid var(--line);
+  border-radius:23px;padding:25px;box-shadow:var(--shadow);
+}
+.kicker{font-size:10px;letter-spacing:1.8px;font-weight:800;color:var(--green)}
+.card h2{font-size:23px;letter-spacing:-.5px;margin:10px 0 7px}
+.sub{font-size:12px;line-height:1.7;color:var(--muted);margin:0 0 20px}
+.mode-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:17px}
+.mode{
+  min-height:91px;border:1px solid var(--line);background:#fff;
+  border-radius:14px;padding:12px 5px;color:var(--muted);
+  font-size:11px;line-height:1.5;font-weight:700;
+}
+.mode .ico{display:block;font-size:23px;margin-bottom:7px}
+.mode.active{background:var(--mint);border-color:#b5d8c4;color:var(--deep)}
+.mode.active .ico{color:var(--green)}
+.preview{
+  position:relative;overflow:hidden;width:100%;aspect-ratio:4/3;
+  min-height:230px;display:flex;align-items:center;justify-content:center;
+  border:1px dashed #cbdad0;border-radius:17px;
+  background:linear-gradient(145deg,#f6faf6,#edf4ee);
+}
+.preview img,.preview video{
+  width:100%;height:100%;object-fit:contain;display:block;
+}
+.placeholder{text-align:center;padding:22px;color:var(--muted)}
+.placeholder .symbol{
+  display:grid;place-items:center;margin:0 auto 12px;
+  width:55px;height:55px;background:#e2f1e8;
+  color:var(--green);border-radius:18px;font-size:25px;
+}
+.placeholder strong{display:block;color:var(--ink);font-size:14px;margin-bottom:7px}
+.placeholder p{font-size:11px;line-height:1.7;margin:0}
+.file-controls,.camera-controls{
+  display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-top:14px;
+}
+.btn{
+  border:0;border-radius:11px;padding:12px 15px;
+  font-size:12px;font-weight:750;transition:.15s;
+}
+.btn:hover{transform:translateY(-1px)}
+.primary{background:var(--green);color:white}
+.primary:hover{background:var(--deep)}
+.secondary{background:var(--mint);color:var(--deep)}
+.outline{background:white;border:1px solid var(--line);color:var(--ink)}
+.full{width:100%;margin-top:17px;padding:15px;font-size:13px}
+.filename{font-size:11px;color:var(--muted);overflow-wrap:anywhere}
+#fileInput{display:none}
+.helper{font-size:10px;line-height:1.7;color:var(--muted);margin-top:15px}
+.hardware-box{
+  margin-top:14px;padding:14px;border-radius:13px;
+  background:#f7f9f6;border:1px solid var(--line);
+}
+.hardware-box strong{font-size:12px}
+.hardware-box p{font-size:11px;line-height:1.7;color:var(--muted);margin:6px 0 11px}
+#hardwareArea,#fileArea{display:none}
+.error{
+  display:none;background:#fff0ee;color:#9b3328;
+  padding:13px;border-radius:11px;margin-top:13px;
+  font-size:12px;line-height:1.6;overflow-wrap:anywhere;
+}
+.report-header{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+}
+.report-empty{
+  min-height:360px;display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:25px;
+}
+.report-empty .symbol{
+  width:65px;height:65px;border-radius:22px;
+  display:grid;place-items:center;margin:0 auto 15px;
+  background:var(--mint);color:var(--green);font-size:29px;
+}
+.report-empty strong{display:block;font-size:14px}
+.report-empty p{font-size:12px;color:var(--muted);line-height:1.7}
+#report{display:none}
+.summary{
+  padding:17px;background:linear-gradient(120deg,#e9f5ed,#f3f8f2);
+  border-radius:15px;margin:18px 0;border:1px solid #dbece0;
+}
+.summary strong{font-size:14px;display:block;margin-bottom:7px}
+.summary p{font-size:12px;line-height:1.7;margin:0;color:#50655b}
+.report-item{padding:16px 0;border-bottom:1px solid var(--line)}
+.report-item:last-child{border-bottom:0}
+.report-item h3{font-size:13px;margin:0 0 8px}
+.report-item p,.report-item li{
+  font-size:12px;line-height:1.8;color:#596c63;overflow-wrap:anywhere;
+}
+.report-item p{margin:5px 0}
+.report-item ul{padding-left:19px;margin:5px 0}
+.report-item li{margin:4px 0}
+.tag{display:inline-block;background:var(--mint);color:var(--deep);
+  border-radius:20px;padding:5px 9px;font-size:10px;margin:3px}
+footer{
+  text-align:center;padding:25px;color:var(--muted);
+  font-size:10px;line-height:1.9;
+}
+@media(max-width:850px){
+  .layout{grid-template-columns:1fr}
+  .hero{padding:28px 23px}
+  .card{padding:19px}
+  .report-empty{min-height:230px}
+}
+@media(max-width:420px){
+  .mode-grid{gap:5px}
+  .mode{font-size:10px}
+  main{padding:22px 12px 40px}
+  .header-right{width:100%;justify-content:space-between}
+}
+/* Profile registration layout fix */
+#registrationCard .form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  margin: 16px 0 7px;
+  color: var(--ink);
+}
+
+#registrationCard .form-field {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: #fff;
+  color: var(--ink);
+}
+
+#registrationCard .registration-actions {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  width: 100%;
+}
+
+#registrationCard .registration-actions .form-field {
+  flex: 1;
+}
+
+#registrationCard .registration-actions button {
+  flex-shrink: 0;
+  margin-top: 0;
+}
+
+#registrationCard .helper {
+  margin-top: 10px;
+}
+
+#registrationCard .success {
+  display: none;
+  color: var(--green);
+  font-size: 12px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 520px) {
+  #registrationCard .registration-actions {
+    flex-direction: column;
+  }
+
+  #registrationCard .registration-actions button {
+    width: 100%;
+  }
+}
+/* Compact treatment guidance to match the rest of the report */
+.treatment-section {
+  margin-top: 18px;
+  font-size: 0.92rem;
+}
+
+.treatment-section h3 {
+  font-size: 1.05rem;
+  margin-bottom: 12px;
+}
+
+.treatment-card {
+  padding: 12px 14px;
+  margin: 10px 0;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.treatment-card p {
+  margin: 6px 0;
+}
+
+.treatment-card strong {
+  font-size: 0.88rem;
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">✳</div>
+    <div>
+      <h2>EpiScanner</h2>
+      <p data-i18n="brandSub">SKIN & SCALP STUDIO</p>
+    </div>
+  </div>
+  <div class="header-right">
+    <select class="language" id="language" aria-label="Select language">
+      <option value="en">🌐 English</option>
+      <option value="hi">🇮🇳 हिन्दी</option>
+      <option value="pa">🇮🇳 ਪੰਜਾਬੀ</option>
+    </select>
+    <span class="pill" data-i18n="prototype">● EXPERIMENTAL PROTOTYPE</span>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="eyebrow" data-i18n="eyebrow">A thoughtful first look at skin health</div>
+    <h1 data-i18n="heroTitle">Understand your skin.<br>One image at a time.</h1>
+    <p data-i18n="heroDesc">
+      Capture or select a skin, scalp or hair image to receive simple
+      AI-assisted observations and general care guidance.
+    </p>
+    <div class="hero-bottom">
+      <span class="hero-tag" data-i18n="tag1">✳ Image-based observations</span>
+      <span class="hero-tag" data-i18n="tag2">♡ Simple guidance</span>
+      <span class="hero-tag" data-i18n="tag3">⌁ Multiple languages</span>
+    </div>
+  </section>
+
+  <section class="card" id="userEntryCard" style="margin-bottom:22px">
+    <div class="kicker" data-i18n="entryKicker">WELCOME TO EPISCANNER</div>
+    <h2 data-i18n="entryTitle">How would you like to continue?</h2>
+    <p class="sub" data-i18n="entryDesc">
+      Continue as a guest or access your existing profile.
+    </p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
+      <button type="button" class="btn secondary" id="guestModeButton"
+        style="padding:20px;white-space:normal">
+        <span data-i18n="guestOption">Continue as Guest</span>
+        <div style="font-size:11px;font-weight:400;margin-top:8px"
+          data-i18n="guestDesc">Start without registration</div>
+      </button>
+
+      <button type="button" class="btn primary" id="registeredModeButton"
+        style="padding:20px;white-space:normal">
+        <span data-i18n="registeredOption">Already Registered?</span>
+        <div style="font-size:11px;font-weight:400;margin-top:8px"
+          data-i18n="registeredDesc">Enter your details</div>
+      </button>
+    </div>
+
+    <p id="entryStatus" role="status" style="display:none;margin-top:15px;font-size:12px;line-height:1.7"></p>
+  </section>
+
+  <!-- Guest confirmation -->
+<section class="card" id="guestPanel" style="display:none;margin-bottom:22px">
+  <div class="kicker">GUEST ACCESS</div>
+  <h2>Continue as Guest</h2>
+  <p class="sub">
+    You can use the scanner without registering a profile.
+  </p>
+  <p id="guestMessage" role="status">
+    You are continuing as a guest.
+  </p>
+  <button class="btn primary" id="startGuestScan" type="button">
+    Continue to scanner
+  </button>
+</section>
+
+<!-- Existing profile login -->
+<section class="card" id="registeredPanel" style="display:none;margin-bottom:22px">
+  <div class="kicker">EXISTING PROFILE</div>
+  <h2>Access your profile</h2>
+  <p class="sub">
+    Enter the name and RFID card UID used during registration.
+  </p>
+
+  <label class="form-label" for="existingName">Person's name</label>
+  <input class="form-field" id="existingName" type="text"
+         maxlength="100" autocomplete="name" required>
+
+  <label class="form-label" for="existingCardUid">RFID card UID</label>
+  <input class="form-field" id="existingCardUid" type="text"
+         maxlength="100" required>
+
+  <button class="btn primary full" id="findProfileButton" type="button">
+    Find my profile
+  </button>
+
+  <div class="error" id="profileLookupError" role="alert"></div>
+  <p class="success" id="profileLookupSuccess" role="status"></p>
+
+  <button class="btn secondary full" id="continueRegisteredScan"
+          type="button" disabled>
+    Continue to scanner
+  </button>
+
+  <button class="btn outline full" id="backToWelcome"
+          type="button">
+    Back
+  </button>
+</section>
+
+  <div class="notice">
+    <span>ⓘ</span>
+    <div><strong data-i18n="healthTitle">Important health information:</strong>
+      <span data-i18n="healthDesc"> EpiScanner is experimental, not a validated medical diagnostic device. An image cannot confirm a disease, allergy or exact cause. Do not delay medical care because of an AI result.</span>
+    </div>
+  </div>
+
+  <section class="card" id="registrationCard" style="margin-bottom:22px">
+  <div class="kicker" data-i18n="profileKicker">PROFILE MANAGEMENT</div>
+
+  <h2 data-i18n="profileTitle">Register a new person</h2>
+
+  <p class="sub" data-i18n="profileDesc">
+    Create a profile so future scan reports can be linked to the correct person.
+  </p>
+
+  <form id="registrationForm">
+    <label class="form-label" for="personName" data-i18n="personName">
+      Person's name
+    </label>
+
+    <input
+      class="form-field"
+      id="personName"
+      name="display_name"
+      type="text"
+      maxlength="100"
+      autocomplete="name"
+      data-i18n-placeholder="personNamePlaceholder"
+      placeholder="Enter person's name"
+      required
+    >
+
+    <label class="form-label" for="cardUid" data-i18n="cardUid">
+      RFID card UID
+    </label>
+
+    <div class="registration-actions">
+      <input
+        class="form-field"
+        id="cardUid"
+        name="card_uid"
+        type="text"
+        maxlength="100"
+        data-i18n-placeholder="cardUidPlaceholder"
+        placeholder="Enter test UID or read a card"
+        required
+      >
+
+      <button class="btn secondary" id="readCardButton" type="button" data-i18n="readCard">
+        Read card
+      </button>
+    </div>
+
+    <p class="helper" data-i18n="registrationHelper">
+      For now, enter a test UID manually.
+    </p>
+
+    <button class="btn primary full" id="registerButton" type="submit" data-i18n="registerPerson">
+      Register person
+    </button>
+
+    <div class="error" id="registrationError" role="alert"></div>
+    <p class="success" id="registrationSuccess" role="status"></p>
+  </form>
+</section>
+
+  <div class="layout">
+    <section class="card">
+      <div class="kicker" data-i18n="captureKicker">01 / IMAGE INPUT</div>
+      <h2 data-i18n="captureTitle">Bring your image into focus</h2>
+      <p class="sub" data-i18n="captureDesc">Choose how you want to capture or provide an image.</p>
+
+      <div class="mode-grid">
+        <button type="button" class="mode active" id="cameraMode">
+          <span class="ico">◎</span><span data-i18n="cameraMode">Live camera</span>
+        </button>
+        <button type="button" class="mode" id="fileMode">
+          <span class="ico">▧</span><span data-i18n="fileMode">Upload image</span>
+        </button>
+        <button type="button" class="mode" id="hardwareMode">
+          <span class="ico">⌗</span><span data-i18n="hardwareMode">Hardware scan</span>
+        </button>
+      </div>
+
+      <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp">
+
+      <div class="preview" id="preview">
+        <div class="placeholder">
+          <div class="symbol">◎</div>
+          <strong data-i18n="previewTitle">Your image starts here</strong>
+          <p data-i18n="previewDesc">Start the camera or select an image to begin.</p>
+        </div>
+      </div>
+
+      <div id="cameraArea">
+        <div class="camera-controls">
+          <button class="btn primary" id="startCamera" type="button" data-i18n="startCamera">Start camera</button>
+          <button class="btn secondary" id="capturePhoto" type="button" disabled data-i18n="capturePhoto">Capture photo</button>
+          <button class="btn outline" id="retakePhoto" type="button" hidden data-i18n="retake">Retake</button>
+        </div>
+      </div>
+
+      <div id="fileArea">
+        <div class="file-controls">
+          <button class="btn secondary" id="chooseFile" type="button" data-i18n="chooseFile">Choose file</button>
+          <span class="filename" id="fileName">No image selected</span>
+        </div>
+        <p class="helper" data-i18n="testingNote">Testing only: use an existing photo while hardware is being developed.</p>
+      </div>
+
+      <div id="hardwareArea">
+        <div class="hardware-box">
+          <strong data-i18n="hardwareTitle">Raspberry Pi / scanner camera</strong>
+          <p data-i18n="hardwareDesc">This mode requests a photo from your hardware backend. The backend must provide the /api/capture endpoint.</p>
+          <button class="btn secondary" id="hardwareCapture" type="button" data-i18n="scanHardware">Scan using hardware</button>
+        </div>
+      </div>
+
+      <button class="btn primary full" id="analyseButton" type="button" disabled data-i18n="analyse">✳ Analyse image</button>
+      <div class="error" id="errorBox" role="alert"></div>
+      <p class="helper" data-i18n="privacyNote">Use only images you have permission to share. Images are sent to the configured AI service for analysis.</p>
+    </section>
+
+    <section class="card">
+      <div class="kicker" data-i18n="reportKicker">02 / AI REVIEW</div>
+      <div class="report-header">
+        <h2 data-i18n="reportTitle">Your assessment</h2>
+      </div>
+      <p class="sub" data-i18n="reportDesc">Clear, point-by-point observations and simple guidance.</p>
+
+      <div id="emptyReport" class="report-empty">
+        <div>
+          <div class="symbol">✳</div>
+          <strong data-i18n="emptyTitle">Your report will appear here</strong>
+          <p data-i18n="emptyDesc">Capture or choose an image, then select Analyse image.</p>
+        </div>
+      </div>
+      <div id="report"></div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <strong>EpiScanner</strong> · <span data-i18n="footerText">Experimental visual assessment</span><br>
+  <span data-i18n="footerWarning">Not a diagnosis. Seek professional medical advice for health concerns.</span>
+</footer>
+
+<script>
+const translations = {
+en: {
+ brandSub:"SKIN & SCALP STUDIO",prototype:"● EXPERIMENTAL PROTOTYPE",
+ eyebrow:"A thoughtful first look at skin health",
+ heroTitle:"Understand your skin.<br>One image at a time.",
+ heroDesc:"Capture or select a skin, scalp or hair image to receive simple AI-assisted observations and general care guidance.",
+ tag1:"✳ Image-based observations",tag2:"♡ Simple guidance",tag3:"⌁ Multiple languages",
+ healthTitle:"Important health information:",
+ healthDesc:" EpiScanner is experimental, not a validated medical diagnostic device. An image cannot confirm a disease, allergy or exact cause. Do not delay medical care because of an AI result.",
+ captureKicker:"01 / IMAGE INPUT",captureTitle:"Bring your image into focus",
+ captureDesc:"Choose how you want to capture or provide an image.",
+ cameraMode:"Live camera",fileMode:"Upload image",hardwareMode:"Hardware scan",
+ previewTitle:"Your image starts here",previewDesc:"Start the camera or select an image to begin.",
+ startCamera:"Start camera",capturePhoto:"Capture photo",retake:"Retake",
+ chooseFile:"Choose file",noFile:"No image selected",
+ testingNote:"Testing only: use an existing photo while hardware is being developed.",
+ hardwareTitle:"Raspberry Pi / scanner camera",
+ hardwareDesc:"This mode requests a photo from your hardware backend. The backend must provide the /api/capture endpoint.",
+ scanHardware:"Scan using hardware",analyse:"✳ Analyse image",
+ privacyNote:"Use only images you have permission to share. Images are sent to the configured AI service for analysis.",
+ reportKicker:"02 / AI REVIEW",reportTitle:"Your assessment",
+ reportDesc:"Clear, point-by-point observations and simple guidance.",
+ emptyTitle:"Your report will appear here",
+ emptyDesc:"Capture or choose an image, then select Analyse image.",
+ footerText:"Experimental visual assessment",
+ footerWarning:"Not a diagnosis. Seek professional medical advice for health concerns.",
+ cameraUnavailable:"Camera is unavailable. Use localhost or HTTPS, or upload an image.",
+ cameraError:"Could not open the camera. Check camera permission or use Upload image.",
+ waitCamera:"Wait for the camera preview, then capture the photo.",
+ invalidType:"Please select a JPG, PNG or WEBP image.",
+ tooLarge:"The image must be 8 MB or smaller.",
+ noImage:"Capture or choose an image first.",
+ analysing:"Analysing image…",loading:"Please wait while your image is being reviewed…",
+ genericError:"The analysis could not be completed. Please try again.",
+ hardwareError:"Hardware scan failed. Check that the Raspberry Pi is connected and its /api/capture endpoint is running.",
+ scanArea:"Scan area",observed:"What the image shows",possible:"Possible explanations",
+ care:"General care",warnings:"Warning signs",doctor:"When to consult a doctor",
+ limits:"Limitations",urgency:"Urgency",disclaimer:"Important note",
+ summary:"Your visual summary",unknown:"The AI assessment is ready. Review the observations below.",
+ noReport:"The AI returned an unexpected report. Please try again.",
+ profileKicker: "PROFILE MANAGEMENT",
+ profileTitle: "Register a new person",
+ profileDesc: "Create a profile so future scan reports can be linked to the correct person.",
+ personName: "Person's name",
+ personNamePlaceholder: "Enter person's name",
+ cardUid: "RFID card UID",
+ cardUidPlaceholder: "Enter test UID or read a card",
+ readCard: "Read card",
+ registrationHelper: "For now, enter a test UID manually. The Read card button will work after the RC522 reader is connected to the Raspberry Pi.",
+ registerPerson: "Register person",
+ registering: "Registering…",
+ registrationRequired: "Enter the person's name and RFID card UID.",
+ registrationSuccess: "Profile registered for",
+ registrationId: "Internal profile ID:",
+ rfidNotConnected: "RFID reading is not connected yet. We will enable this after setting up the RC522 reader on the Raspberry Pi.",
+ entryKicker: "WELCOME TO EPISCANNER",
+ entryTitle: "How would you like to continue?",
+ entryDesc: "Continue as a guest or access your existing profile.",
+ guestOption: "Continue as Guest",
+ guestDesc: "Start without registration",
+ registeredOption: "Already Registered?",
+ registeredDesc: "Enter your details"
+},
+hi: {
+ brandSub:"त्वचा और स्कैल्प स्टूडियो",prototype:"● प्रायोगिक प्रोटोटाइप",
+ eyebrow:"त्वचा की देखभाल की पहली झलक",
+ heroTitle:"अपनी त्वचा को समझें।<br>एक तस्वीर से शुरुआत करें।",
+ heroDesc:"त्वचा, सिर की त्वचा या बालों की तस्वीर लें या चुनें। AI से सरल जानकारी और सामान्य देखभाल के सुझाव पाएं।",
+ tag1:"✳ तस्वीर पर आधारित जानकारी",tag2:"♡ आसान सुझाव",tag3:"⌁ कई भाषाएँ",
+ healthTitle:"स्वास्थ्य संबंधी जरूरी सूचना:",
+ healthDesc:" EpiScanner एक प्रायोगिक प्रणाली है, प्रमाणित चिकित्सा उपकरण नहीं। तस्वीर से बीमारी, एलर्जी या उसका सही कारण निश्चित नहीं किया जा सकता। AI के परिणाम के कारण डॉक्टर से मिलने में देरी न करें।",
+ captureKicker:"01 / तस्वीर चुनें",captureTitle:"अपनी तस्वीर तैयार करें",
+ captureDesc:"तस्वीर लेने या चुनने का तरीका चुनें।",
+ cameraMode:"कैमरा",fileMode:"तस्वीर अपलोड",hardwareMode:"हार्डवेयर स्कैन",
+ previewTitle:"आपकी तस्वीर यहाँ दिखेगी",previewDesc:"शुरू करने के लिए कैमरा चालू करें या तस्वीर चुनें।",
+ startCamera:"कैमरा चालू करें",capturePhoto:"तस्वीर लें",retake:"दोबारा लें",
+ chooseFile:"फाइल चुनें",noFile:"कोई तस्वीर नहीं चुनी",
+ testingNote:"केवल परीक्षण के लिए: हार्डवेयर तैयार होने तक मौजूदा तस्वीर का उपयोग करें।",
+ hardwareTitle:"Raspberry Pi / स्कैनर कैमरा",
+ hardwareDesc:"यह विकल्प हार्डवेयर से तस्वीर मांगता है। इसके लिए बैकएंड में /api/capture endpoint होना चाहिए।",
+ scanHardware:"हार्डवेयर से स्कैन करें",analyse:"✳ तस्वीर का विश्लेषण करें",
+ privacyNote:"केवल वही तस्वीरें साझा करें जिनकी अनुमति आपके पास है। विश्लेषण के लिए तस्वीर AI सेवा को भेजी जाती है।",
+ reportKicker:"02 / AI रिपोर्ट",reportTitle:"आपकी रिपोर्ट",
+ reportDesc:"सरल भाषा में बिंदुवार जानकारी और देखभाल के सुझाव।",
+ emptyTitle:"आपकी रिपोर्ट यहाँ दिखेगी",
+ emptyDesc:"तस्वीर लें या चुनें, फिर विश्लेषण करें।",
+ footerText:"प्रायोगिक दृश्य आकलन",
+ footerWarning:"यह निदान नहीं है। स्वास्थ्य संबंधी चिंता के लिए डॉक्टर से सलाह लें।",
+ cameraUnavailable:"कैमरा उपलब्ध नहीं है। localhost या HTTPS खोलें, या तस्वीर अपलोड करें।",
+ cameraError:"कैमरा नहीं खुला। अनुमति जाँचें या तस्वीर अपलोड करें।",
+ waitCamera:"कैमरा दृश्य आने दें, फिर तस्वीर लें।",
+ invalidType:"JPG, PNG या WEBP तस्वीर चुनें।",tooLarge:"तस्वीर 8 MB या उससे छोटी होनी चाहिए।",
+ noImage:"पहले तस्वीर लें या चुनें।",analysing:"विश्लेषण हो रहा है…",
+ loading:"कृपया प्रतीक्षा करें, तस्वीर की जाँच हो रही है…",
+ genericError:"विश्लेषण पूरा नहीं हुआ। कृपया दोबारा प्रयास करें।",
+ hardwareError:"हार्डवेयर स्कैन विफल हुआ। Raspberry Pi कनेक्शन और /api/capture endpoint जाँचें।",
+ scanArea:"स्कैन का क्षेत्र",observed:"तस्वीर में क्या दिखता है",possible:"संभावित कारण",
+ care:"सामान्य देखभाल",warnings:"चेतावनी के संकेत",doctor:"डॉक्टर से कब मिलें",
+ limits:"सीमाएँ",urgency:"कितनी जल्दी सहायता लें",disclaimer:"जरूरी सूचना",
+ summary:"तस्वीर का सारांश",unknown:"AI आकलन तैयार है। नीचे दी गई जानकारी देखें।",
+ noReport:"AI रिपोर्ट का प्रारूप सही नहीं है। कृपया दोबारा प्रयास करें।",
+ profileKicker: "प्रोफाइल प्रबंधन",
+ profileTitle: "नया व्यक्ति पंजीकृत करें",
+ profileDesc: "एक प्रोफाइल बनाएं ताकि भविष्य की स्कैन रिपोर्ट सही व्यक्ति से जुड़ सके।",
+ personName: "व्यक्ति का नाम",
+ personNamePlaceholder: "व्यक्ति का नाम लिखें",
+ cardUid: "RFID कार्ड UID",
+ cardUidPlaceholder: "टेस्ट UID लिखें या कार्ड पढ़ें",
+ readCard: "कार्ड पढ़ें",
+ registrationHelper: "अभी टेस्ट UID मैन्युअल रूप से लिखें। Raspberry Pi में RC522 रीडर जोड़ने के बाद कार्ड पढ़ने की सुविधा चालू होगी।",
+ registerPerson: "व्यक्ति पंजीकृत करें",
+ registering: "पंजीकरण हो रहा है…",
+ registrationRequired: "व्यक्ति का नाम और RFID कार्ड UID दर्ज करें।",
+ registrationSuccess: "प्रोफाइल पंजीकृत हुई:",
+ registrationId: "आंतरिक प्रोफाइल ID:",
+ rfidNotConnected: "RFID रीडर अभी कनेक्ट नहीं है। Raspberry Pi में RC522 सेटअप करने के बाद इसे चालू करेंगे।",
+ entryKicker: "EPISCANNER में आपका स्वागत है",
+ entryTitle: "आप कैसे आगे बढ़ना चाहते हैं?",
+ entryDesc: "अतिथि के रूप में आगे बढ़ें या अपनी मौजूदा प्रोफाइल खोलें।",
+ guestOption: "अतिथि के रूप में आगे बढ़ें",
+ guestDesc: "पंजीकरण के बिना शुरू करें",
+ registeredOption: "पहले से पंजीकृत हैं?",
+ registeredDesc: "अपनी जानकारी दर्ज करें"
+},
+pa: {
+ brandSub:"ਚਮੜੀ ਅਤੇ ਸਕੈਲਪ ਸਟੂਡੀਓ",prototype:"● ਪ੍ਰਯੋਗਾਤਮਕ ਪ੍ਰੋਟੋਟਾਈਪ",
+ eyebrow:"ਚਮੜੀ ਦੀ ਸਿਹਤ ਬਾਰੇ ਪਹਿਲੀ ਝਲਕ",
+ heroTitle:"ਆਪਣੀ ਚਮੜੀ ਨੂੰ ਸਮਝੋ।<br>ਇੱਕ ਤਸਵੀਰ ਨਾਲ ਸ਼ੁਰੂ ਕਰੋ।",
+ heroDesc:"ਚਮੜੀ, ਸਿਰ ਦੀ ਚਮੜੀ ਜਾਂ ਵਾਲਾਂ ਦੀ ਤਸਵੀਰ ਖਿੱਚੋ ਜਾਂ ਚੁਣੋ। AI ਰਾਹੀਂ ਸਧਾਰਨ ਜਾਣਕਾਰੀ ਅਤੇ ਆਮ ਦੇਖਭਾਲ ਦੇ ਸੁਝਾਅ ਲਵੋ।",
+ tag1:"✳ ਤਸਵੀਰ ਅਧਾਰਿਤ ਜਾਣਕਾਰੀ",tag2:"♡ ਸੌਖੇ ਸੁਝਾਅ",tag3:"⌁ ਕਈ ਭਾਸ਼ਾਵਾਂ",
+ healthTitle:"ਸਿਹਤ ਸੰਬੰਧੀ ਜ਼ਰੂਰੀ ਜਾਣਕਾਰੀ:",
+ healthDesc:" EpiScanner ਇੱਕ ਪ੍ਰਯੋਗਾਤਮਕ ਪ੍ਰਣਾਲੀ ਹੈ, ਪ੍ਰਮਾਣਿਤ ਮੈਡੀਕਲ ਯੰਤਰ ਨਹੀਂ। ਤਸਵੀਰ ਨਾਲ ਬਿਮਾਰੀ, ਐਲਰਜੀ ਜਾਂ ਸਹੀ ਕਾਰਨ ਦੀ ਪੁਸ਼ਟੀ ਨਹੀਂ ਹੁੰਦੀ। AI ਦੇ ਨਤੀਜੇ ਕਰਕੇ ਡਾਕਟਰੀ ਸਲਾਹ ਲੈਣ ਵਿੱਚ ਦੇਰੀ ਨਾ ਕਰੋ।",
+ captureKicker:"01 / ਤਸਵੀਰ ਚੁਣੋ",captureTitle:"ਆਪਣੀ ਤਸਵੀਰ ਤਿਆਰ ਕਰੋ",
+ captureDesc:"ਤਸਵੀਰ ਲੈਣ ਜਾਂ ਚੁਣਨ ਦਾ ਤਰੀਕਾ ਚੁਣੋ।",
+ cameraMode:"ਕੈਮਰਾ",fileMode:"ਤਸਵੀਰ ਅੱਪਲੋਡ",hardwareMode:"ਹਾਰਡਵੇਅਰ ਸਕੈਨ",
+ previewTitle:"ਤੁਹਾਡੀ ਤਸਵੀਰ ਇੱਥੇ ਦਿਖੇਗੀ",previewDesc:"ਕੈਮਰਾ ਚਾਲੂ ਕਰੋ ਜਾਂ ਤਸਵੀਰ ਚੁਣੋ।",
+ startCamera:"ਕੈਮਰਾ ਚਾਲੂ ਕਰੋ",capturePhoto:"ਤਸਵੀਰ ਖਿੱਚੋ",retake:"ਦੁਬਾਰਾ ਖਿੱਚੋ",
+ chooseFile:"ਫਾਈਲ ਚੁਣੋ",noFile:"ਕੋਈ ਤਸਵੀਰ ਨਹੀਂ ਚੁਣੀ",
+ testingNote:"ਸਿਰਫ਼ ਟੈਸਟ ਲਈ: ਹਾਰਡਵੇਅਰ ਤਿਆਰ ਹੋਣ ਤੱਕ ਮੌਜੂਦਾ ਤਸਵੀਰ ਵਰਤੋ।",
+ hardwareTitle:"Raspberry Pi / ਸਕੈਨਰ ਕੈਮਰਾ",
+ hardwareDesc:"ਇਹ ਵਿਕਲਪ ਹਾਰਡਵੇਅਰ ਤੋਂ ਤਸਵੀਰ ਮੰਗਦਾ ਹੈ। ਬੈਕਐਂਡ ਵਿੱਚ /api/capture endpoint ਹੋਣਾ ਲਾਜ਼ਮੀ ਹੈ।",
+ scanHardware:"ਹਾਰਡਵੇਅਰ ਨਾਲ ਸਕੈਨ ਕਰੋ",analyse:"✳ ਤਸਵੀਰ ਦਾ ਵਿਸ਼ਲੇਸ਼ਣ ਕਰੋ",
+ privacyNote:"ਸਿਰਫ਼ ਉਹ ਤਸਵੀਰਾਂ ਸਾਂਝੀਆਂ ਕਰੋ ਜਿਨ੍ਹਾਂ ਦੀ ਇਜਾਜ਼ਤ ਤੁਹਾਡੇ ਕੋਲ ਹੈ। ਤਸਵੀਰ ਵਿਸ਼ਲੇਸ਼ਣ ਲਈ AI ਸੇਵਾ ਨੂੰ ਭੇਜੀ ਜਾਂਦੀ ਹੈ।",
+ reportKicker:"02 / AI ਰਿਪੋਰਟ",reportTitle:"ਤੁਹਾਡੀ ਰਿਪੋਰਟ",
+ reportDesc:"ਸੌਖੀ ਭਾਸ਼ਾ ਵਿੱਚ ਮੁੱਖ ਨੁਕਤੇ ਅਤੇ ਦੇਖਭਾਲ ਦੇ ਸੁਝਾਅ।",
+ emptyTitle:"ਤੁਹਾਡੀ ਰਿਪੋਰਟ ਇੱਥੇ ਆਵੇਗੀ",
+ emptyDesc:"ਤਸਵੀਰ ਖਿੱਚੋ ਜਾਂ ਚੁਣੋ, ਫਿਰ ਵਿਸ਼ਲੇਸ਼ਣ ਕਰੋ।",
+ footerText:"ਪ੍ਰਯੋਗਾਤਮਕ ਤਸਵੀਰੀ ਮੁਲਾਂਕਣ",
+ footerWarning:"ਇਹ ਡਾਕਟਰੀ ਨਿਦਾਨ ਨਹੀਂ ਹੈ। ਸਿਹਤ ਸੰਬੰਧੀ ਚਿੰਤਾ ਲਈ ਡਾਕਟਰ ਨਾਲ ਸੰਪਰਕ ਕਰੋ।",
+ cameraUnavailable:"ਕੈਮਰਾ ਉਪਲਬਧ ਨਹੀਂ। localhost ਜਾਂ HTTPS ਖੋਲ੍ਹੋ, ਜਾਂ ਤਸਵੀਰ ਅੱਪਲੋਡ ਕਰੋ।",
+ cameraError:"ਕੈਮਰਾ ਨਹੀਂ ਖੁੱਲ੍ਹਿਆ। ਇਜਾਜ਼ਤ ਚੈੱਕ ਕਰੋ ਜਾਂ ਤਸਵੀਰ ਅੱਪਲੋਡ ਕਰੋ।",
+ waitCamera:"ਕੈਮਰੇ ਦੀ ਤਸਵੀਰ ਆਉਣ ਦਿਓ, ਫਿਰ ਖਿੱਚੋ।",
+ invalidType:"JPG, PNG ਜਾਂ WEBP ਤਸਵੀਰ ਚੁਣੋ।",tooLarge:"ਤਸਵੀਰ 8 MB ਜਾਂ ਇਸ ਤੋਂ ਘੱਟ ਹੋਣੀ ਚਾਹੀਦੀ ਹੈ।",
+ noImage:"ਪਹਿਲਾਂ ਤਸਵੀਰ ਖਿੱਚੋ ਜਾਂ ਚੁਣੋ।",analysing:"ਵਿਸ਼ਲੇਸ਼ਣ ਹੋ ਰਿਹਾ ਹੈ…",
+ loading:"ਕਿਰਪਾ ਕਰਕੇ ਉਡੀਕ ਕਰੋ, ਤਸਵੀਰ ਦੀ ਜਾਂਚ ਹੋ ਰਹੀ ਹੈ…",
+ genericError:"ਵਿਸ਼ਲੇਸ਼ਣ ਪੂਰਾ ਨਹੀਂ ਹੋਇਆ। ਮੁੜ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+ hardwareError:"ਹਾਰਡਵੇਅਰ ਸਕੈਨ ਅਸਫਲ ਹੋਇਆ। Raspberry Pi ਕਨੈਕਸ਼ਨ ਅਤੇ /api/capture endpoint ਚੈੱਕ ਕਰੋ।",
+ scanArea:"ਸਕੈਨ ਦਾ ਖੇਤਰ",observed:"ਤਸਵੀਰ ਵਿੱਚ ਕੀ ਦਿਖਦਾ ਹੈ",possible:"ਸੰਭਾਵੀ ਕਾਰਨ",
+ care:"ਆਮ ਦੇਖਭਾਲ",warnings:"ਚੇਤਾਵਨੀ ਦੇ ਸੰਕੇਤ",doctor:"ਡਾਕਟਰ ਨੂੰ ਕਦੋਂ ਮਿਲਣਾ ਹੈ",
+ limits:"ਸੀਮਾਵਾਂ",urgency:"ਕਿੰਨੀ ਜਲਦੀ ਮਦਦ ਲੈਣੀ ਹੈ",disclaimer:"ਜ਼ਰੂਰੀ ਨੋਟ",
+ summary:"ਤਸਵੀਰ ਦਾ ਸਾਰ",unknown:"AI ਮੁਲਾਂਕਣ ਤਿਆਰ ਹੈ। ਹੇਠਾਂ ਦਿੱਤੀ ਜਾਣਕਾਰੀ ਵੇਖੋ।",
+ noReport:"AI ਰਿਪੋਰਟ ਦਾ ਫਾਰਮੈਟ ਠੀਕ ਨਹੀਂ ਹੈ। ਮੁੜ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+ profileKicker: "ਪ੍ਰੋਫਾਈਲ ਪ੍ਰਬੰਧਨ",
+ profileTitle: "ਨਵਾਂ ਵਿਅਕਤੀ ਰਜਿਸਟਰ ਕਰੋ",
+ profileDesc: "ਇੱਕ ਪ੍ਰੋਫਾਈਲ ਬਣਾਓ ਤਾਂ ਜੋ ਭਵਿੱਖ ਦੀਆਂ ਸਕੈਨ ਰਿਪੋਰਟਾਂ ਸਹੀ ਵਿਅਕਤੀ ਨਾਲ ਜੁੜ ਸਕਣ।",
+ personName: "ਵਿਅਕਤੀ ਦਾ ਨਾਮ",
+ personNamePlaceholder: "ਵਿਅਕਤੀ ਦਾ ਨਾਮ ਲਿਖੋ",
+ cardUid: "RFID ਕਾਰਡ UID",
+ cardUidPlaceholder: "ਟੈਸਟ UID ਲਿਖੋ ਜਾਂ ਕਾਰਡ ਪੜ੍ਹੋ",
+ readCard: "ਕਾਰਡ ਪੜ੍ਹੋ",
+ registrationHelper: "ਫਿਲਹਾਲ ਟੈਸਟ UID ਹੱਥੀਂ ਲਿਖੋ। Raspberry Pi ਨਾਲ RC522 ਰੀਡਰ ਜੋੜਨ ਤੋਂ ਬਾਅਦ ਕਾਰਡ ਪੜ੍ਹਨ ਦੀ ਸਹੂਲਤ ਚਾਲੂ ਹੋਵੇਗੀ।",
+ registerPerson: "ਵਿਅਕਤੀ ਰਜਿਸਟਰ ਕਰੋ",
+ registering: "ਰਜਿਸਟਰ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ…",
+ registrationRequired: "ਵਿਅਕਤੀ ਦਾ ਨਾਮ ਅਤੇ RFID ਕਾਰਡ UID ਦਰਜ ਕਰੋ।",
+ registrationSuccess: "ਪ੍ਰੋਫਾਈਲ ਰਜਿਸਟਰ ਹੋ ਗਈ:",
+ registrationId: "ਅੰਦਰੂਨੀ ਪ੍ਰੋਫਾਈਲ ID:",
+ rfidNotConnected: "RFID ਰੀਡਰ ਹਾਲੇ ਕਨੈਕਟ ਨਹੀਂ ਹੈ। Raspberry Pi ਉੱਤੇ RC522 ਸੈੱਟਅੱਪ ਕਰਨ ਤੋਂ ਬਾਅਦ ਇਸਨੂੰ ਚਾਲੂ ਕਰਾਂਗੇ।",
+ entryKicker: "EPISCANNER ਵਿੱਚ ਤੁਹਾਡਾ ਸਵਾਗਤ ਹੈ",
+ entryTitle: "ਤੁਸੀਂ ਕਿਵੇਂ ਅੱਗੇ ਵਧਣਾ ਚਾਹੁੰਦੇ ਹੋ?",
+ entryDesc: "ਮਹਿਮਾਨ ਵਜੋਂ ਜਾਰੀ ਰੱਖੋ ਜਾਂ ਆਪਣੀ ਮੌਜੂਦਾ ਪ੍ਰੋਫਾਈਲ ਖੋਲ੍ਹੋ।",
+ guestOption: "ਮਹਿਮਾਨ ਵਜੋਂ ਜਾਰੀ ਰੱਖੋ",
+ guestDesc: "ਰਜਿਸਟ੍ਰੇਸ਼ਨ ਤੋਂ ਬਿਨਾਂ ਸ਼ੁਰੂ ਕਰੋ",
+ registeredOption: "ਪਹਿਲਾਂ ਤੋਂ ਰਜਿਸਟਰਡ ਹੋ?",
+ registeredDesc: "ਆਪਣੀ ਜਾਣਕਾਰੀ ਦਰਜ ਕਰੋ"
+}
+};
+
+const $ = id => document.getElementById(id);
+const langSelect = $("language");
+let selectedBlob = null;
+let cameraStream = null;
+let liveVideo = null;
+let previewURL = null;
+let currentMode = "camera";
+
+function t(key) {
+  return translations[langSelect.value][key] ||
+         translations.en[key] || key;
+}
+
+function applyLanguage() {
+  document.documentElement.lang = langSelect.value;
+
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.dataset.i18n;
+
+    // Preserve the line break in the main heading.
+    if (key === "heroTitle") {
+      el.innerHTML = t(key);
+    } else {
+      el.textContent = t(key);
+    }
+  });
+
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+    el.placeholder = t(el.dataset.i18nPlaceholder);
+  });
+
+  $("fileName").textContent = selectedBlob
+    ? (selectedBlob.name || "camera-capture.jpg")
+    : t("noFile");
+}
+langSelect.addEventListener("change", applyLanguage);
+
+function error(message) {
+  $("errorBox").textContent = message;
+  $("errorBox").style.display = "block";
+}
+function clearError() {
+  $("errorBox").textContent = "";
+  $("errorBox").style.display = "none";
+}
+function stopCamera() {
+  if (cameraStream) cameraStream.getTracks().forEach(track => track.stop());
+  cameraStream = null;
+  liveVideo = null;
+}
+function clearURL() {
+  if (previewURL) URL.revokeObjectURL(previewURL);
+  previewURL = null;
+}
+function placeholder(titleKey, descKey, symbol) {
+  $("preview").replaceChildren();
+  const wrap = document.createElement("div");
+  wrap.className = "placeholder";
+  const sym = document.createElement("div");
+  sym.className = "symbol";
+  sym.textContent = symbol;
+  const title = document.createElement("strong");
+  title.textContent = t(titleKey);
+  const desc = document.createElement("p");
+  desc.textContent = t(descKey);
+  wrap.append(sym, title, desc);
+  $("preview").appendChild(wrap);
+}
+function showImage(blob, name) {
+  selectedBlob = blob;
+  stopCamera();
+  clearURL();
+  previewURL = URL.createObjectURL(blob);
+  $("preview").replaceChildren();
+  const img = document.createElement("img");
+  img.src = previewURL;
+  img.alt = "Image preview";
+  $("preview").appendChild(img);
+  $("fileName").textContent = name || "camera-capture.jpg";
+  $("analyseButton").disabled = false;
+  $("capturePhoto").disabled = true;
+  $("retakePhoto").hidden = false;
+  clearError();
+}
+function chooseMode(mode) {
+  currentMode = mode;
+  clearError();
+  stopCamera();
+
+  $("cameraMode").classList.toggle("active", mode === "camera");
+  $("fileMode").classList.toggle("active", mode === "file");
+  $("hardwareMode").classList.toggle("active", mode === "hardware");
+
+  $("cameraArea").style.display = mode === "camera" ? "block" : "none";
+  $("fileArea").style.display = mode === "file" ? "block" : "none";
+  $("hardwareArea").style.display = mode === "hardware" ? "block" : "none";
+
+  if (selectedBlob) {
+    // Recreate preview from selected image.
+    clearURL();
+    previewURL = URL.createObjectURL(selectedBlob);
+    $("preview").replaceChildren();
+    const img = document.createElement("img");
+    img.src = previewURL;
+    img.alt = "Selected image";
+    $("preview").appendChild(img);
+    $("analyseButton").disabled = false;
+  } else {
+    $("analyseButton").disabled = true;
+    if (mode === "file") placeholder("previewTitle","testingNote","▧");
+    else if (mode === "hardware") placeholder("hardwareTitle","hardwareDesc","⌗");
+    else placeholder("previewTitle","previewDesc","◎");
+  }
+}
+$("cameraMode").addEventListener("click", () => chooseMode("camera"));
+$("fileMode").addEventListener("click", () => chooseMode("file"));
+$("hardwareMode").addEventListener("click", () => chooseMode("hardware"));
+
+$("chooseFile").addEventListener("click", () => {
+  clearError();
+  $("fileInput").click();
+});
+$("fileInput").addEventListener("change", () => {
+  const file = $("fileInput").files[0];
+  if (!file) return;
+  if (!["image/jpeg","image/png","image/webp"].includes(file.type)) {
+    error(t("invalidType")); $("fileInput").value = ""; return;
+  }
+  if (file.size > 8 * 1024 * 1024) {
+    error(t("tooLarge")); $("fileInput").value = ""; return;
+  }
+  chooseMode("file");
+  showImage(file, file.name);
+});
+
+$("startCamera").addEventListener("click", async () => {
+  clearError();
+  if (!navigator.mediaDevices?.getUserMedia) {
+    error(t("cameraUnavailable")); return;
+  }
+  try {
+    stopCamera();
+    selectedBlob = null;
+    $("analyseButton").disabled = true;
+    $("capturePhoto").disabled = true;
+    $("retakePhoto").hidden = true;
+
+    cameraStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: "user" }, audio: false
+    });
+    $("preview").replaceChildren();
+    liveVideo = document.createElement("video");
+    liveVideo.autoplay = true;
+    liveVideo.playsInline = true;
+    liveVideo.muted = true;
+    liveVideo.srcObject = cameraStream;
+    $("preview").appendChild(liveVideo);
+    await liveVideo.play();
+    $("capturePhoto").disabled = false;
+  } catch (e) {
+    stopCamera();
+    error(t("cameraError"));
+  }
+});
+
+$("capturePhoto").addEventListener("click", () => {
+  if (!liveVideo || !liveVideo.videoWidth) {
+    error(t("waitCamera")); return;
+  }
+  const canvas = document.createElement("canvas");
+  canvas.width = liveVideo.videoWidth;
+  canvas.height = liveVideo.videoHeight;
+  canvas.getContext("2d").drawImage(liveVideo,0,0);
+  canvas.toBlob(blob => {
+    if (blob) showImage(blob, "camera-capture.jpg");
+    else error(t("genericError"));
+  }, "image/jpeg", .92);
+});
+
+$("retakePhoto").addEventListener("click", () => {
+  selectedBlob = null;
+  $("fileInput").value = "";
+  $("analyseButton").disabled = true;
+  $("retakePhoto").hidden = true;
+  $("fileName").textContent = t("noFile");
+  chooseMode("camera");
+});
+
+// Hardware mode expects GET /api/capture to return an image file.
+// This route must be implemented on the FastAPI backend.
+$("hardwareCapture").addEventListener("click", async () => {
+  clearError();
+  $("hardwareCapture").disabled = true;
+  $("hardwareCapture").textContent = t("analysing");
+  try {
+    const response = await fetch("/api/capture", { method: "GET" });
+    if (!response.ok) throw new Error("Hardware capture endpoint unavailable");
+    const blob = await response.blob();
+    if (!blob.type.startsWith("image/")) {
+      throw new Error("Hardware endpoint did not return an image");
+    }
+    if (blob.size > 8 * 1024 * 1024) throw new Error("Image too large");
+    showImage(blob, "raspberry-pi-capture.jpg");
+  } catch (e) {
+    error(t("hardwareError"));
+  } finally {
+    $("hardwareCapture").disabled = false;
+    $("hardwareCapture").textContent = t("scanHardware");
+  }
+});
+
+function addText(parent, tag, value) {
+  const el = document.createElement(tag);
+  el.textContent = value == null ? "" : String(value);
+  parent.appendChild(el);
+  return el;
+}
+function renderValue(parent, value) {
+  if (value === null || value === undefined || value === "") return;
+
+  if (Array.isArray(value)) {
+    const ul = document.createElement("ul");
+    value.forEach(item => {
+      const li = document.createElement("li");
+      if (typeof item === "string" || typeof item === "number") {
+        li.textContent = item;
+      } else if (item && typeof item === "object") {
+        const name = item.name || item.title || "";
+        const reason = item.reasoning || item.reason || item.description || "";
+        li.textContent = (name ? name + ": " : "") +
+          (reason || JSON.stringify(item)) +
+          (item.confidence ? " · " + item.confidence : "");
+      }
+      ul.appendChild(li);
+    });
+    parent.appendChild(ul);
+  } else if (typeof value === "object") {
+    Object.entries(value).forEach(([key,val]) => {
+      const p = document.createElement("p");
+      p.textContent = key.replaceAll("_"," ") + ": " +
+        (typeof val === "object" ? JSON.stringify(val) : String(val));
+      parent.appendChild(p);
+    });
+  } else {
+    addText(parent,"p",value);
+  }
+}
+function addSection(titleKey, value) {
+  if (value === undefined || value === null || value === "") return;
+  const section = document.createElement("section");
+  section.className = "report-item";
+  addText(section,"h3",t(titleKey));
+  renderValue(section,value);
+  $("report").appendChild(section);
+}
+
+function addTreatmentGuidance(items) {
+  if (!Array.isArray(items) || items.length === 0) return;
+
+  const language = langSelect.value;
+
+  const labels = {
+    en: {
+      title: "Treatment Guidance",
+      category: "Care category",
+      ingredient: "Active ingredient / salt",
+      purpose: "Purpose",
+      product: "Product type",
+      examples: "Indian product examples",
+      precautions: "Precautions",
+      professional: "Professional advice",
+      yes: "Consult a healthcare professional or pharmacist.",
+      no: "Follow the product label and monitor for irritation.",
+      none: "No specific treatment suggestion is available."
+    },
+    hi: {
+      title: "उपचार संबंधी मार्गदर्शन",
+      category: "देखभाल का प्रकार",
+      ingredient: "सक्रिय घटक / दवा का साल्ट",
+      purpose: "उपयोग",
+      product: "उत्पाद का प्रकार",
+      examples: "भारत में उपलब्ध उत्पादों के उदाहरण",
+      precautions: "सावधानियाँ",
+      professional: "विशेषज्ञ की सलाह",
+      yes: "डॉक्टर या फार्मासिस्ट से सलाह लें।",
+      no: "उत्पाद के निर्देशों का पालन करें और जलन पर ध्यान दें।",
+      none: "कोई विशेष उपचार सुझाव उपलब्ध नहीं है।"
+    },
+    pa: {
+      title: "ਇਲਾਜ ਸੰਬੰਧੀ ਜਾਣਕਾਰੀ",
+      category: "ਦੇਖਭਾਲ ਦੀ ਕਿਸਮ",
+      ingredient: "ਸਰਗਰਮ ਤੱਤ / ਦਵਾਈ ਦਾ ਸਾਲਟ",
+      purpose: "ਵਰਤੋਂ",
+      product: "ਉਤਪਾਦ ਦੀ ਕਿਸਮ",
+      examples: "ਭਾਰਤ ਵਿੱਚ ਉਪਲਬਧ ਉਤਪਾਦਾਂ ਦੀਆਂ ਉਦਾਹਰਨਾਂ",
+      precautions: "ਸਾਵਧਾਨੀਆਂ",
+      professional: "ਮਾਹਿਰ ਦੀ ਸਲਾਹ",
+      yes: "ਡਾਕਟਰ ਜਾਂ ਫਾਰਮਾਸਿਸਟ ਨਾਲ ਸਲਾਹ ਕਰੋ।",
+      no: "ਉਤਪਾਦ ਦੇ ਨਿਰਦੇਸ਼ਾਂ ਦੀ ਪਾਲਣਾ ਕਰੋ ਅਤੇ ਜਲਣ ਵੱਲ ਧਿਆਨ ਦਿਓ।",
+      none: "ਕੋਈ ਖਾਸ ਇਲਾਜ ਸੁਝਾਅ ਉਪਲਬਧ ਨਹੀਂ ਹੈ।"
+    }
+  };
+
+  const text = labels[language] || labels.en;
+  const section = document.createElement("section");
+  section.className = "report-section treatment-section";
+
+  addText(section, "h3", text.title);
+
+  const seenTreatments = new Set();
+
+items
+  .filter((item) => {
+    if (!item || typeof item !== "object") return false;
+
+    const key = [
+      item.category,
+      item.active_ingredient,
+      item.product_type
+    ].join("|").toLowerCase().trim();
+
+    if (seenTreatments.has(key)) return false;
+    seenTreatments.add(key);
+    return true;
+  })
+  .slice(0, 2)
+  .forEach((item) => {
+    if (!item || typeof item !== "object") return;
+
+    const card = document.createElement("div");
+    card.className = "treatment-card";
+
+    function addField(label, value) {
+      if (value === undefined || value === null || value === "") return;
+
+      const row = document.createElement("p");
+      addText(row, "strong", label + ": ");
+      addText(row, "span", String(value));
+      card.appendChild(row);
+    }
+
+    addField(text.category, item.category);
+    addField(text.ingredient, item.active_ingredient);
+    addField(text.purpose, item.purpose);
+    addField(text.product, item.product_type);
+
+    if (Array.isArray(item.india_product_examples) &&
+        item.india_product_examples.length > 0) {
+      const examples = item.india_product_examples
+        .map((example) => {
+          if (typeof example === "string") return example;
+          if (example && typeof example === "object") {
+            return example.name || example.brand || "";
+          }
+          return "";
+        })
+        .filter(Boolean);
+
+      if (examples.length) {
+        addField(text.examples, examples.join(", "));
+      }
+    }
+
+    addField(text.precautions, item.precautions);
+
+    if (item.professional_advice_needed === true) {
+      addField(text.professional, text.yes);
+    }
+
+    if (card.childElementCount > 0) {
+      section.appendChild(card);
+    }
+  });
+
+  if (section.childElementCount > 1) {
+    $("report").appendChild(section);
+  }
+}
+
+function renderReport(data) {
+  $("report").replaceChildren();
+  const summary = document.createElement("div");
+  summary.className = "summary";
+  addText(summary,"strong",t("summary"));
+  addText(summary,"p",data.image_quality || data.scan_area || t("unknown"));
+  $("report").appendChild(summary);
+
+  addSection("scanArea",data.scan_area);
+  addSection("observed",data.observed_features);
+  addSection("possible",data.possible_explanations);
+  addSection("care",data.general_care);
+  addTreatmentGuidance(data.treatment_guidance);
+  addSection("warnings",data.warning_signs);
+  addSection("doctor",data.doctor_recommendation);
+  addSection("limits",data.limitations);
+  const urgencyLabels = {
+  en: {
+    routine: "Routine — general care and monitoring may be appropriate.",
+    prompt: "Prompt — arrange medical advice soon, especially if symptoms persist or worsen.",
+    urgent: "Urgent — seek urgent medical assessment."
+  },
+  hi: {
+    routine: "सामान्य — सामान्य देखभाल करें और लक्षणों पर ध्यान दें।",
+    prompt: "जल्द सलाह लें — लक्षण बने रहने या बढ़ने पर डॉक्टर से संपर्क करें।",
+    urgent: "तत्काल — तुरंत चिकित्सा सहायता लें।"
+  },
+  pa: {
+    routine: "ਆਮ — ਆਮ ਦੇਖਭਾਲ ਕਰੋ ਅਤੇ ਲੱਛਣਾਂ ਵੱਲ ਧਿਆਨ ਦਿਓ।",
+    prompt: "ਜਲਦੀ ਸਲਾਹ ਲਵੋ — ਲੱਛਣ ਬਣੇ ਰਹਿਣ ਜਾਂ ਵਧਣ 'ਤੇ ਡਾਕਟਰ ਨਾਲ ਸੰਪਰਕ ਕਰੋ।",
+    urgent: "ਤੁਰੰਤ — ਫੌਰੀ ਡਾਕਟਰੀ ਸਹਾਇਤਾ ਲਵੋ।"
+  }
+};
+
+const urgency = String(data.urgency || "routine")
+  .toLowerCase()
+  .trim();
+
+const language = langSelect.value;
+
+const urgencyText =
+  urgencyLabels[language]?.[urgency] ||
+  urgencyLabels.en[urgency] ||
+  String(data.urgency || "Not specified");
+
+addSection("urgency", urgencyText);
+  addSection("disclaimer",data.disclaimer ||
+    "Experimental AI visual assessment only; this is not a medical diagnosis.");
+
+  $("emptyReport").style.display = "none";
+  $("report").style.display = "block";
+}
+
+$("analyseButton").addEventListener("click", async () => {
+  if (!selectedBlob) { error(t("noImage")); return; }
+
+  clearError();
+  $("analyseButton").disabled = true;
+  $("analyseButton").textContent = t("analysing");
+  $("emptyReport").style.display = "none";
+  $("report").style.display = "block";
+  $("report").replaceChildren();
+  const loading = document.createElement("div");
+  loading.className = "report-empty";
+  addText(loading,"p",t("loading"));
+  $("report").appendChild(loading);
+
+  try {
+    const form = new FormData();
+    form.append("file",selectedBlob,selectedBlob.name || "capture.jpg");
+    form.append("language",langSelect.value);
+
+    if (activeProfile){
+      form.append("card_uid", activeProfile.card_uid);
+    }
+
+    const response = await fetch("/api/analyse",{
+      method:"POST",body:form
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.detail || t("genericError"));
+    if (!result.report || typeof result.report !== "object") {
+      throw new Error(t("noReport"));
+    }
+    renderReport(result.report);
+  } catch (e) {
+    $("report").style.display = "none";
+    $("emptyReport").style.display = "flex";
+    error(e.message || t("genericError"));
+  } finally {
+    $("analyseButton").disabled = !selectedBlob;
+    $("analyseButton").textContent = t("analyse");
+  }
+});
+
+$("registrationForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const name = $("personName").value.trim();
+  const cardUid = $("cardUid").value.trim();
+  const errorBox = $("registrationError");
+  const successBox = $("registrationSuccess");
+  const button = $("registerButton");
+
+  errorBox.style.display = "none";
+  errorBox.textContent = "";
+  successBox.style.display = "none";
+  successBox.textContent = "";
+
+  if (!name || !cardUid) {
+    errorBox.textContent = t("registrationRequired");
+    errorBox.style.display = "block";
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = t("registering");
+
+  try {
+    const response = await fetch("/api/profiles", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        display_name: name,
+        card_uid: cardUid
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.detail || "Could not register this person."
+      );
+    }
+
+    successBox.textContent =
+      t("registrationSuccess") + " " +
+      result.profile.display_name + ". " +
+      t("registrationId") + " " +
+      result.profile.profile_id;
+
+    successBox.style.display = "block";
+    $("registrationForm").reset();
+
+  } catch (err) {
+    errorBox.textContent =
+      err.message || "Could not connect to EpiScanner.";
+    errorBox.style.display = "block";
+  } finally {
+    button.disabled = false;
+    button.textContent = "Register person";
+  }
+});
+
+$("readCardButton").addEventListener("click", () => {
+  $("registrationError").textContent =
+    t("RFID reading is not connected yet. We will enable this after setting up the RC522 reader on the Raspberry Pi.");
+  $("registrationError").style.display = "block";
+  $("registrationSuccess").style.display = "none";
+});
+
+window.addEventListener("beforeunload", () => {
+  stopCamera();
+  clearURL();
+});
+
+// ==========================================
+ // GUEST AND REGISTERED USER ACCESS
+ // ==========================================
+
+ let activeProfile = null;
+ let isGuestMode = true;
+
+ function showOnlyAccessPanel(panelId) {
+   ["userEntryCard", "guestPanel", "registeredPanel",
+    "registrationCard"].forEach(id => {
+     $(id).style.display = id === panelId ? "block" : "none";
+   });
+ }
+
+ // Guest button
+ $("guestModeButton").addEventListener("click", () => {
+   isGuestMode = true;
+   activeProfile = null;
+   showOnlyAccessPanel("guestPanel");
+ });
+
+ // Confirm guest access
+ $("startGuestScan").addEventListener("click", () => {
+   showOnlyAccessPanel(null);
+   document.querySelector(".layout").scrollIntoView({
+     behavior: "smooth",
+     block: "start"
+   });
+ });
+
+ // Registered user button
+ $("registeredModeButton").addEventListener("click", () => {
+   isGuestMode = false;
+   activeProfile = null;
+   $("existingName").value = "";
+   $("existingCardUid").value = "";
+   $("continueRegisteredScan").disabled = true;
+   $("profileLookupError").style.display = "none";
+   $("profileLookupSuccess").style.display = "none";
+   showOnlyAccessPanel("registeredPanel");
+ });
+
+ // Look up an existing profile
+ $("findProfileButton").addEventListener("click", async () => {
+   const displayName = $("existingName").value.trim();
+   const cardUid = $("existingCardUid").value.trim();
+   const errorBox = $("profileLookupError");
+   const successBox = $("profileLookupSuccess");
+   const button = $("findProfileButton");
+
+   errorBox.style.display = "none";
+   successBox.style.display = "none";
+   activeProfile = null;
+   $("continueRegisteredScan").disabled = true;
+
+   if (!displayName || !cardUid) {
+     errorBox.textContent = "Enter your name and RFID card UID.";
+     errorBox.style.display = "block";
+     return;
+   }
+
+   button.disabled = true;
+   button.textContent = "Checking profile…";
+
+   try {
+     const response = await fetch("/api/profiles/lookup", {
+       method: "POST",
+       headers: { "Content-Type": "application/json" },
+       body: JSON.stringify({
+         display_name: displayName,
+         card_uid: cardUid
+       })
+     });
+
+     const result = await response.json();
+
+     if (!response.ok) {
+       throw new Error(result.detail || "Profile not found.");
+     }
+
+     activeProfile = result.profile;
+
+     successBox.textContent =
+       "Welcome, " + activeProfile.display_name +
+       "! Your profile has been found.";
+     successBox.style.display = "block";
+     $("continueRegisteredScan").disabled = false;
+
+   } catch (err) {
+     errorBox.textContent =
+       err.message || "Could not find your profile.";
+     errorBox.style.display = "block";
+   } finally {
+     button.disabled = false;
+     button.textContent = "Find my profile";
+   }
+ });
+
+ // Continue after profile lookup
+ $("continueRegisteredScan").addEventListener("click", () => {
+   if (!activeProfile) return;
+
+   showOnlyAccessPanel(null);
+   document.querySelector(".layout").scrollIntoView({
+     behavior: "smooth",
+     block: "start"
+   });
+ });
+
+ // Back to welcome screen
+ $("backToWelcome").addEventListener("click", () => {
+   showOnlyAccessPanel("userEntryCard");
+ });
+
+ // Start with welcome screen visible
+ 
+applyLanguage();
+</script>
+</body>
+</html>
