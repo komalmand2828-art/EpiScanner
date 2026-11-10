@@ -1,6 +1,8 @@
 import json
 import os
 from io import BytesIO
+import logging
+logger = logging.getLogger(__name__)
 
 from dotenv import load_dotenv
 from google import genai
@@ -97,9 +99,20 @@ IMPORTANT LANGUAGE RULES:
             },
         )
     except Exception as exc:
+        logger.exception(
+
+            "Gemini API failed. Model: %s | Error: %s",
+
+            MODEL_NAME,
+
+            type(exc).__name__
+
+        )
+
         raise RuntimeError(
-            "The AI service request failed. Check your internet connection, "
-            "Gemini API configuration, model availability, and server terminal."
+
+            "AI analysis failed. Please check Vercel Runtime Logs."
+
         ) from exc
 
     if not response.text:
