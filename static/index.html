@@ -56,8 +56,8 @@ main{max-width:1280px;margin:auto;padding:35px 22px 60px}
   padding:38px;color:white;margin-bottom:24px;
 }
 .hero:after{
-  content:"✳";position:absolute;right:6%;top:-55px;
-  font-size:240px;color:#ffffff0b;pointer-events:none;
+  content: none;
+  display: none;
 }
 .eyebrow{
   text-transform:uppercase;letter-spacing:2px;
@@ -275,6 +275,74 @@ footer{
 
 .treatment-card strong {
   font-size: 0.88rem;
+}
+/* EpiScanner Mobile Responsive Fix */
+
+@media (max-width: 600px) {
+  header {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+
+  .brand h2 {
+    font-size: 19px;
+  }
+
+  .header-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .hero {
+    padding: 25px 20px;
+    border-radius: 22px;
+    overflow: hidden;
+  }
+
+  .hero h1 {
+    font-size: 32px;
+    line-height: 1.15;
+    letter-spacing: -1px;
+    overflow-wrap: break-word;
+  }
+
+  .hero p {
+    font-size: 13px;
+  }
+
+  .hero-bottom {
+    gap: 8px;
+  }
+
+  .hero-tag {
+    font-size: 10px;
+  }
+
+  .card {
+    padding: 17px;
+    border-radius: 19px;
+  }
+
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .preview {
+    min-height: 200px;
+  }
+
+  .mode-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .btn {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  #userEntryCard > div[style*="grid"] {
+    grid-template-columns: 1fr !important;
+  }
 }
 </style>
 </head>
