@@ -206,80 +206,75 @@ async def analyse(
     language: str = Form("en"),
     card_uid: str | None = Form(default=None),
 ):
-    if file.content_type not in ALLOWED_TYPES:
-        raise HTTPException(
-            status_code=415,
-            detail="Upload a JPG, PNG, or WEBP image.",
-        )
-
-    if language not in ALLOWED_LANGUAGES:
-        raise HTTPException(
-            status_code=400,
-            detail="Choose English, Hindi, or Punjabi.",
-        )
+    save_result = None
 
     try:
+        if file.content_type not in ALLOWED_TYPES:
+            raise HTTPException(415, "Upload JPG, PNG, or WEBP.")
+
+        if language not in ALLOWED_LANGUAGES:
+            raise HTTPException(400, "Choose English, Hindi, or Punjabi.")
+
         image_bytes = await file.read(MAX_IMAGE_BYTES + 1)
 
         if not image_bytes:
-            raise HTTPException(
-                status_code=400,
-                detail="The uploaded image is empty.",
-            )
+            raise HTTPException(400, "Uploaded image is empty.")
 
         if len(image_bytes) > MAX_IMAGE_BYTES:
-            raise HTTPException(
-                status_code=413,
-                detail=f"Image size must not exceed {MAX_IMAGE_MB} MB.",
-            )
+            raise HTTPException(413, "Image must not exceed 8 MB.")
 
-        try:
-            report = analyse_image(
-                image_bytes=image_bytes,
-                mime_type=file.content_type,
-                language=language,
-            )
-        except ValueError as exc:
-            raise HTTPException(
-                status_code=400,
-                detail=str(exc),
-            ) from exc
-        except RuntimeError as exc:
-            raise HTTPException(
-                status_code=502,
-                detail=str(exc),
-            ) from exc
-        except Exception as exc:
-            print(
-                f"EpiScanner request failed: "
-                f"{type(exc).__name__}: {exc}"
-            )
-            raise HTTPException(
-                status_code=502,
-                detail=(
-                    "The AI service could not complete the analysis. "
-                    "Check the server terminal and Gemini configuration."
-                ),
-            ) from exc
+        # AI image analysis
+        report = analyse_image(
+            image_bytes=image_bytes,
+            mime_type=file.content_type,
+            language=language,
+        )
 
-        # Save the scan only when a registered person is identified.
+        # Save report for registered RFID user
         if card_uid and card_uid.strip():
             try:
-                    save_result = save_scan_report(
+                save_result = save_scan_report(
                     report,
                     card_uid=card_uid.strip(),
-                    )
-                    print("Scan storage result:", save_result)
-            except Exception as exc:
-                    print(
-                        f"Scan storage failed: {type(exc).__name__}: {exc}"
-                    )
+                )
+                print("Scan storage result:", save_result)
+
+            except Exception as storage_error:
+                print(
+                    "Storage error:",
+                    type(storage_error).__name__,
+                    str(storage_error),
+                )
+
         return {
             "success": True,
             "filename": file.filename,
             "language": language,
             "report": report,
-            "storage": locals().get("storage_result"),
-        }       
+            "storage": save_result,
+        }
+
+    except HTTPException:
+        raise
+
+    except ValueError as error:
+        print("Image validation error:", str(error))
+        raise HTTPException(400, detail=str(error)) from error
+
+    except RuntimeError as error:
+        print("AI service error:", str(error))
+        raise HTTPException(502, detail=str(error)) from error
+
+    except Exception as error:
+        print(
+            "EpiScanner error:",
+            type(error).__name__,
+            str(error),
+        )
+        raise HTTPException(
+            500,
+            detail="Analysis failed. Check server logs.",
+        ) from error
+
     finally:
         await file.close()
