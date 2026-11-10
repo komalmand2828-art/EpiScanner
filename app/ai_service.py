@@ -94,26 +94,21 @@ IMPORTANT LANGUAGE RULES:
                 ),
             ],
             config={
-                "response_mime_type": "application/json",
                 "temperature": 0.2,
             },
         )
     except Exception as exc:
-        logger.exception(
+        print("GEMINI ERROR TYPE:", type(exc).__name__)
 
-            "Gemini API failed. Model: %s | Error: %s",
+    print("GEMINI ERROR DETAILS:", repr(exc))
 
-            MODEL_NAME,
+    print("GEMINI RESPONSE:", getattr(exc, "response_json", None))
 
-            type(exc).__name__
+    raise RuntimeError(
 
-        )
+        f"Gemini API failed: {str(exc)}"
 
-        raise RuntimeError(
-
-            "AI analysis failed. Please check Vercel Runtime Logs."
-
-        ) from exc
+    ) from exc
 
     if not response.text:
         raise RuntimeError("The AI returned an empty report. Please try again.")
