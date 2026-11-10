@@ -5,6 +5,7 @@ from io import BytesIO
 
 from dotenv import load_dotenv
 from google import genai
+from google.genai import types
 from PIL import Image, UnidentifiedImageError
 
 from app.prompts import SYSTEM_PROMPT
@@ -19,7 +20,15 @@ logger = logging.getLogger(__name__)
 API_KEY = os.getenv("GEMINI_API_KEY")
 MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
-client = genai.Client(api_key=API_KEY) if API_KEY else None
+client = (
+    genai.Client(
+        api_key=API_KEY,
+        http_options=types.HttpOptions(
+            api_version="v1beta"
+        )
+    )
+    if API_KEY else Nones
+)
 
 # Supported languages
 LANGUAGES = {
