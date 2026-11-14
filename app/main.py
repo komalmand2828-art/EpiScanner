@@ -4,6 +4,7 @@ import io
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.ai_service import analyse_image
 from app.database import (
@@ -46,6 +47,17 @@ app = FastAPI(
         "Not a medical diagnostic system."
     ),
     version="0.2.0",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://episcanner-ai.vercel.app",
+        "https://episcanner-all.vercel.app",
+    ],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.mount(
@@ -268,7 +280,7 @@ async def analyse(
         # Save report for registered RFID user
         if card_uid and card_uid.strip():
             try:
-                storage_result = save_scan_report(
+                save_result = save_scan_report(
                     report,
                     card_uid=card_uid.strip(),
                 )
@@ -314,29 +326,6 @@ async def analyse(
     finally:
         await file.close()
 
-@app.get("/api/history/{card_uid}")
-async def get_patient_history(card_uid: str):
-    try:
-        profile = find_profile(
-            card_uid=card_uid,
-            display_name=""
-        )
-
-        if not profile:
-            raise HTTPException(status_code=404, detail="Patient not found")
-
-        history = get_scan_history(card_uid)
-
-        return {
-            "success": True,
-            "history": history
-        }
-
-    except HTTPException:
-        raise
-    except Exception as exc:
-        print("History error:", str(exc))
-        raise HTTPException(status_code=500, detail="History unavailable")
 
 @app.get("/api/history/{card_uid}")
 async def patient_history(card_uid: str):

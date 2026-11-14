@@ -374,6 +374,7 @@ footer{
   font-size: 13px;
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
@@ -662,22 +663,39 @@ footer{
   <strong>EpiScanner</strong> · <span data-i18n="footerText">Experimental visual assessment</span><br>
   <span data-i18n="footerWarning">Not a diagnosis. Seek professional medical advice for health concerns.</span>
 </footer>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 
-  const API_BASE = "https://vernon-enough-button-airline.trycloudflare.com";
+const SUPABASE_URL = "https://sqhfskxsovdkzxvxqzun.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_2pV11aVFWaE-C-97vLNniA_TGdXy4rJ";
+
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
 const originalFetch = window.fetch.bind(window);
 
-window.fetch = (input, init) => {
-  const url = typeof input === "string" ? input : input.url;
+let API_BASE = "";
 
-  if (typeof url === "string" && url.startsWith("/api/")) {
-    input = API_BASE + url;
+const tunnelReady = (async () => {
+  const { data, error } = await supabase
+    .from("device_config")
+    .select("tunnel_url")
+    .eq("id", 1)
+    .single();
+
+  if (error || !data || !data.tunnel_url) {
+    throw new Error("Scanner connection unavailable. Check tunnel URL.");
   }
 
-  return originalFetch(input, init);
-};
+  API_BASE = data.tunnel_url.replace(/\/+$/, "");
+})();
+
+async function apiFetch(path, options = {}) {
+  await tunnelReady;
+  return originalFetch(API_BASE + path, options);
+}
 const translations = {
 en: {
  brandSub:"SKIN & SCALP STUDIO",prototype:"● EXPERIMENTAL PROTOTYPE",
@@ -1656,7 +1674,7 @@ $("historyButton").addEventListener("click", async () => {
 $("refreshHistory").addEventListener("click", loadHistory);
 
  // Start with welcome screen visible
- 
+showOnlyAccessPanel("userEntryCard"); 
 applyLanguage();
 </script>
 </body>

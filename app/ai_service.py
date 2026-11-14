@@ -2,6 +2,7 @@ import json
 import os
 import logging
 from io import BytesIO
+from pathlib import Path
 
 from dotenv import load_dotenv
 from google import genai
@@ -11,7 +12,8 @@ from PIL import Image, UnidentifiedImageError
 from app.prompts import SYSTEM_PROMPT
 
 # Load environment variables
-load_dotenv()
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 
 # Logging
 logger = logging.getLogger(__name__)
@@ -27,7 +29,7 @@ client = (
             api_version="v1beta"
         )
     )
-    if API_KEY else Nones
+    if API_KEY else None
 )
 
 # Supported languages
@@ -169,11 +171,13 @@ IMPORTANT LANGUAGE RULES:
         )
 
     # Add disclaimer
-    report.setdefault(
-        "disclaimer",
-        "Experimental visual assessment only; "
-        "this is not a medical diagnosis.",
-    )
+    disclaimers = {
+    "en": "Experimental visual assessment only; this is not a medical diagnosis.",
+    "hi": "यह केवल प्रायोगिक दृश्य आकलन है; यह चिकित्सा निदान नहीं है।",
+    "pa": "ਇਹ ਸਿਰਫ਼ ਪ੍ਰਯੋਗਾਤਮਕ ਤਸਵੀਰੀ ਮੁਲਾਂਕਣ ਹੈ; ਇਹ ਡਾਕਟਰੀ ਨਿਦਾਨ ਨਹੀਂ ਹੈ।",
+}
+
+    report.setdefault("disclaimer", disclaimers[language])
 
     logger.info(
         "Image analysis completed successfully. Language: %s",

@@ -42,15 +42,14 @@ def save_scan_report(report, card_uid="DEMO-USER"):
 
     profile_result = (
         client.table("profiles")
-        .upsert(
-            {"card_uid": card_uid.strip()},
-            on_conflict="card_uid",
-        )
+        .select("id")
+        .eq("card_uid", card_uid.strip())
+        .limit(1)
         .execute()
     )
 
     if not profile_result.data:
-        raise RuntimeError("Could not find or create profile.")
+        raise RuntimeError("Registered profile not found.")
 
     profile_id = profile_result.data[0]["id"]
 
