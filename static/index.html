@@ -663,13 +663,12 @@ footer{
   <strong>EpiScanner</strong> · <span data-i18n="footerText">Experimental visual assessment</span><br>
   <span data-i18n="footerWarning">Not a diagnosis. Seek professional medical advice for health concerns.</span>
 </footer>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 
 const SUPABASE_URL = "https://sqhfskxsovdkzxvxqzun.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_2pV11aVFWaE-C-97vLNniA_TGdXy4rJ";
 
-const supabase = window.supabase.createClient(
+window.epiSupabase = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY
 );
@@ -679,7 +678,7 @@ const originalFetch = window.fetch.bind(window);
 let API_BASE = "";
 
 const tunnelReady = (async () => {
-  const { data, error } = await supabase
+  const { data, error } = await window.epiSupabase
     .from("device_config")
     .select("tunnel_url")
     .eq("id", 1)
@@ -1078,7 +1077,7 @@ $("hardwareCapture").addEventListener("click", async () => {
   $("hardwareCapture").disabled = true;
   $("hardwareCapture").textContent = t("analysing");
   try {
-    const response = await fetch("/api/capture", { method: "GET" });
+    const response = await apiFetch("/api/capture", { method: "GET" });
     if (!response.ok) throw new Error("Hardware capture endpoint unavailable");
     const blob = await response.blob();
     if (!blob.type.startsWith("image/")) {
@@ -1338,7 +1337,7 @@ $("analyseButton").addEventListener("click", async () => {
       form.append("card_uid", activeProfile.card_uid);
     }
 
-    const response = await fetch("/api/analyse",{
+    const response = await apiFetch("/api/analyse",{
       method:"POST",body:form
     });
     const result = await response.json();
@@ -1381,7 +1380,7 @@ $("registrationForm").addEventListener("submit", async (event) => {
   button.textContent = t("registering");
 
   try {
-    const response = await fetch("/api/profiles", {
+    const response = await apiFetch("/api/profiles", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -1498,7 +1497,7 @@ window.addEventListener("beforeunload", () => {
    button.textContent = "Checking profile…";
 
    try {
-     const response = await fetch("/api/profiles/lookup", {
+     const response = await apiFetch("/api/profiles/lookup", {
        method: "POST",
        headers: { "Content-Type": "application/json" },
        body: JSON.stringify({
@@ -1574,7 +1573,7 @@ async function loadHistory() {
   addText(list, "p", "Loading previous scans...");
 
   try {
-    const response = await fetch(
+    const response = await apiFetch(
       `/api/profiles/${encodeURIComponent(cardUid)}/history`
     );
 
