@@ -432,6 +432,13 @@ footer{
         <div style="font-size:11px;font-weight:400;margin-top:8px"
           data-i18n="registeredDesc">Enter your details</div>
       </button>
+      <button type="button" class="btn secondary" id="newRegistrationButton"
+        style="padding:20px;white-space:normal">
+        <span>Register New Person</span>
+        <div style="font-size:11px;font-weight:400;margin-top:8px">
+        Create a new patient profile
+        </div>
+      </button>
     </div>
 
     <p id="entryStatus" role="status" style="display:none;margin-top:15px;font-size:12px;line-height:1.7"></p>
@@ -551,6 +558,10 @@ footer{
     <div class="error" id="registrationError" role="alert"></div>
     <p class="success" id="registrationSuccess" role="status"></p>
   </form>
+  <button class="btn outline full" id="backFromRegistration"
+        type="button">
+  Back to Welcome
+  </button>
 </section>
 
   <div class="layout">
@@ -677,22 +688,27 @@ const originalFetch = window.fetch.bind(window);
 
 let API_BASE = "";
 
-const tunnelReady = (async () => {
+async function loadTunnelURL() {
   const { data, error } = await window.epiSupabase
     .from("device_config")
     .select("tunnel_url")
     .eq("id", 1)
     .single();
 
-  if (error || !data || !data.tunnel_url) {
-    throw new Error("Scanner connection unavailable. Check tunnel URL.");
+  if (error) {
+    throw new Error("Could not read scanner connection from Supabase.");
+  }
+
+  if (!data?.tunnel_url) {
+    throw new Error("Scanner is offline or tunnel URL is not published yet.");
   }
 
   API_BASE = data.tunnel_url.replace(/\/+$/, "");
-})();
+}
 
 async function apiFetch(path, options = {}) {
-  await tunnelReady;
+  await loadTunnelURL();
+
   return originalFetch(API_BASE + path, options);
 }
 const translations = {
@@ -1404,7 +1420,18 @@ $("registrationForm").addEventListener("submit", async (event) => {
       result.profile.profile_id;
 
     successBox.style.display = "block";
-    $("registrationForm").reset();
+
+    activeProfile = result.profile;
+    isGuestMode = false;
+
+    $("historyButton").hidden = false;
+
+    showOnlyAccessPanel(null);
+
+    document.querySelector(".layout").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
 
   } catch (err) {
     errorBox.textContent =
@@ -1472,6 +1499,10 @@ window.addEventListener("beforeunload", () => {
    $("profileLookupError").style.display = "none";
    $("profileLookupSuccess").style.display = "none";
    showOnlyAccessPanel("registeredPanel");
+ });
+
+ $("newRegistrationButton").addEventListener("click", () => {
+  showOnlyAccessPanel("registrationCard");
  });
 
  // Look up an existing profile
@@ -1553,6 +1584,7 @@ window.addEventListener("beforeunload", () => {
  $("backToWelcome").addEventListener("click", () => {
    showOnlyAccessPanel("userEntryCard");
  });
+
 
  // =====================================
 // EPISCANNER SCAN HISTORY
